@@ -1,0 +1,25 @@
+services:
+  cosmo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cosmo
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/html/database/database.sqlite
+      QUEUE_CONNECTION: database
+      CACHE_DRIVER: file
+      SESSION_DRIVER: array
+      LOG_CHANNEL: stderr
+    volumes:
+      - cosmo-db:/var/www/html/database
+    restart: unless-stopped
+
+volumes:
+  cosmo-db:
