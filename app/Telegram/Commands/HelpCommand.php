@@ -22,7 +22,9 @@ class HelpCommand implements Command
 
         $text = $telegram->formatBold('Available commands')."\n\n"
             ."/help: Show this help message\n"
-            .'/ping: Check bot responsiveness';
+            ."/ping: Check bot responsiveness\n"
+            ."/weather: German day forecast table\n"
+            .'/daily: German daily status report';
 
         $telegram->sendMessage($chatId, $text);
     }

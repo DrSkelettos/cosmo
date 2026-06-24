@@ -3,8 +3,10 @@
 namespace App\Telegram;
 
 use App\Services\Telegram\TelegramService;
+use App\Telegram\Commands\DailyCommand;
 use App\Telegram\Commands\HelpCommand;
 use App\Telegram\Commands\PingCommand;
+use App\Telegram\Commands\WeatherCommand;
 use App\Telegram\Contracts\Command;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -17,6 +19,8 @@ class CommandRouter
     protected array $commands = [
         'help' => HelpCommand::class,
         'ping' => PingCommand::class,
+        'weather' => WeatherCommand::class,
+        'daily' => DailyCommand::class,
     ];
 
     public function __construct(protected TelegramService $telegram)

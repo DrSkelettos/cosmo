@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\DailyReportJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -18,4 +19,5 @@ Artisan::command('inspire', function () {
 |
 */
 
-Schedule::command('inspire')->weekly();
+Schedule::job(new DailyReportJob)->weekdays()->at('06:00');
+Schedule::job(new DailyReportJob)->weekends()->at('07:00');
