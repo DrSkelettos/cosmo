@@ -16,17 +16,17 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install \
-    pdo \
-    pdo_sqlite \
-    sqlite3 \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    zip \
-    opcache
+# Install PHP extensions that are not already enabled in the base image
+RUN set -eux; \
+    for ext in pdo pdo_sqlite sqlite3 mbstring bcmath zip opcache; do \
+        if [ "$ext" = "opcache" ]; then \
+            php -m | grep -qi 'opcache' && continue; \
+        fi; \
+        php -m | grep -qi "^${ext}$" && continue; \
+        docker-php-ext-install "$ext"; \
+    done; \
+    # pcntl is useful for queue workers but not available/safe in every FPM image; ignore failure
+    php -m | grep -qi '^pcntl$' || docker-php-ext-install pcntl || true
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
