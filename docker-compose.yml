@@ -1,11 +1,28 @@
 services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - cosmo
+    restart: unless-stopped
+
   cosmo:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: cosmo
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     env_file:
       - .env
     environment:
@@ -23,3 +40,5 @@ services:
 
 volumes:
   cosmo-db:
+  caddy-data:
+  caddy-config:
