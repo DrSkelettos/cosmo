@@ -1,12 +1,7 @@
 {
     email {$ACME_EMAIL}
-    auto_https disable_redirects
 }
 
 {$DOMAIN} {
-    reverse_proxy cosmo:80
-}
-
-:80 {
     reverse_proxy cosmo:80
 }
