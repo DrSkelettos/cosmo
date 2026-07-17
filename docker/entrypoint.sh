@@ -37,6 +37,8 @@ php artisan migrate --force --no-interaction
 if [ -f /var/www/html/database/database.sqlite ]; then
     chown www-data:www-data /var/www/html/database/database.sqlite
     chmod 664 /var/www/html/database/database.sqlite
+else
+    echo "WARNING: /var/www/html/database/database.sqlite does not exist. Run migrations or create it manually."
 fi
 
 exec "$@"
