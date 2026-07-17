@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     curl \
+    nodejs \
+    npm \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -40,6 +42,9 @@ RUN composer install --no-dev --no-interaction --no-scripts --optimize-autoloade
 
 # Copy application code
 COPY . .
+
+# Install npm dependencies and build assets
+RUN npm install --ignore-scripts && npm run build
 
 # Default runtime environment
 ENV APP_ENV=production
