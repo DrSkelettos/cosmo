@@ -40,11 +40,15 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
 
+# Copy npm files and install dependencies for layer caching
+COPY package.json package-lock.json ./
+RUN npm install --ignore-scripts
+
 # Copy application code
 COPY . .
 
-# Install npm dependencies and build assets
-RUN npm install --ignore-scripts && npm run build
+# Build assets
+RUN npm run build
 
 # Default runtime environment
 ENV APP_ENV=production
