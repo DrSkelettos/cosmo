@@ -53,6 +53,7 @@ RUN npm run build
 # Default runtime environment
 ENV APP_ENV=production
 ENV APP_DEBUG=false
+ENV APP_URL=https://skelettos-cosmo.duckdns.org
 ENV LOG_CHANNEL=stderr
 ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/var/www/html/database/database.sqlite

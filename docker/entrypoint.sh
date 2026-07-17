@@ -2,7 +2,7 @@
 set -e
 
 # Ensure writable directories exist
-mkdir -p /var/www/html/storage/logs /var/www/html/database /var/log/supervisor
+mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/sessions /var/www/html/database /var/log/supervisor
 chown -R www-data:www-data /var/www/html/storage /var/www/html/database
 
 # Create and set permissions for laravel.log file
