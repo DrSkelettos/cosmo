@@ -11,9 +11,17 @@ chown www-data:www-data /var/www/html/storage/logs/laravel.log
 chmod 664 /var/www/html/storage/logs/laravel.log
 
 # Create and set permissions for cron log file
-touch /var/log/cron.log
-chown www-data:www-data /var/log/cron.log
-chmod 664 /var/log/cron.log
+touch /var/www/html/storage/logs/cron.log
+chown www-data:www-data /var/www/html/storage/logs/cron.log
+chmod 664 /var/www/html/storage/logs/cron.log
+
+# Create and set permissions for cron supervisor log files
+touch /var/www/html/storage/logs/cron-supervisor.log
+touch /var/www/html/storage/logs/cron-supervisor.err
+chown www-data:www-data /var/www/html/storage/logs/cron-supervisor.log
+chown www-data:www-data /var/www/html/storage/logs/cron-supervisor.err
+chmod 664 /var/www/html/storage/logs/cron-supervisor.log
+chmod 664 /var/www/html/storage/logs/cron-supervisor.err
 
 # Generate an application key if the environment does not provide one
 if [ -z "$APP_KEY" ]; then
