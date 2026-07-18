@@ -32,6 +32,9 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate --no-interaction
 fi
 
+# Clear cached config/routes/events to ensure fresh state after code updates
+php artisan optimize:clear --no-interaction
+
 # Run migrations (creates the SQLite database and queue tables if missing)
 php artisan migrate --force --no-interaction
 

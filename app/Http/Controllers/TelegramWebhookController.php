@@ -7,6 +7,7 @@ use App\Telegram\CommandRouter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class TelegramWebhookController extends Controller
 {
@@ -49,7 +50,14 @@ class TelegramWebhookController extends Controller
             return response()->noContent();
         }
 
-        $this->router->route($update);
+        try {
+            $this->router->route($update);
+        } catch (Throwable $e) {
+            Log::channel('telegram')->error('Webhook processing failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
 
         return response()->noContent();
     }
