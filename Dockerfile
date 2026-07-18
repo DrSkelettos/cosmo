@@ -50,17 +50,6 @@ COPY . .
 # Build assets
 RUN npm run build
 
-# Default runtime environment
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-ENV APP_URL=https://skelettos-cosmo.duckdns.org
-ENV LOG_CHANNEL=stderr
-ENV DB_CONNECTION=sqlite
-ENV DB_DATABASE=/var/www/html/database/database.sqlite
-ENV QUEUE_CONNECTION=database
-ENV CACHE_DRIVER=file
-ENV SESSION_DRIVER=file
-
 # Create storage/database directories and set permissions
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache database \
     && touch database/database.sqlite \
