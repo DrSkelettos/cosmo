@@ -27,11 +27,19 @@ services:
       - .env
     volumes:
       - cosmo-db:/var/www/html/database
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama-data:/root/.ollama
     restart: unless-stopped
 
 volumes:
   cosmo-db:
   caddy-data:
   caddy-config:
+  ollama-data:
