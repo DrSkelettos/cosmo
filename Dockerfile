@@ -47,6 +47,9 @@ RUN npm install --ignore-scripts
 # Copy application code
 COPY . .
 
+# Regenerate autoloader to include all app classes in the classmap
+RUN composer dump-autoload --optimize --no-dev
+
 # Build assets
 RUN npm run build
 
