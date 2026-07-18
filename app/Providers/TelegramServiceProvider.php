@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Telegram\TelegramService;
+use App\Telegram\ChatHandler;
 use App\Telegram\CommandRouter;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,7 +25,10 @@ class TelegramServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(CommandRouter::class, function ($app) {
-            return new CommandRouter($app->make(TelegramService::class));
+            return new CommandRouter(
+                $app->make(TelegramService::class),
+                $app->make(ChatHandler::class),
+            );
         });
     }
 

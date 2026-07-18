@@ -18,8 +18,10 @@ class TelegramService
 
     /**
      * Send a text message to the given Telegram chat.
+     *
+     * @return int|false The message ID on success, or false on failure.
      */
-    public function sendMessage(int $chatId, string $text, array $options = []): bool
+    public function sendMessage(int $chatId, string $text, array $options = []): int|false
     {
         if (empty($this->botToken)) {
             Log::channel('telegram')->warning('Telegram bot token is missing');
@@ -58,9 +60,93 @@ class TelegramService
                 return false;
             }
 
-            return true;
+            return (int) ($body['result']['message_id'] ?? 0);
         } catch (Throwable $exception) {
             Log::channel('telegram')->error('Telegram send message failed', [
+                'chat_id' => $chatId,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
+     * Edit the text of a previously sent message.
+     *
+     * @param  array<string, mixed>  $options
+     */
+    public function editMessageText(int $chatId, int $messageId, string $text, array $options = []): bool
+    {
+        if (empty($this->botToken)) {
+            Log::channel('telegram')->warning('Telegram bot token is missing');
+
+            return false;
+        }
+
+        try {
+            $payload = array_merge([
+                'chat_id' => $chatId,
+                'message_id' => $messageId,
+                'text' => $text,
+                'parse_mode' => $this->parseMode,
+                'disable_web_page_preview' => true,
+            ], $options);
+
+            $response = Http::timeout(30)
+                ->post("{$this->apiUrl}{$this->botToken}/editMessageText", $payload);
+
+            if (! $response->successful()) {
+                Log::channel('telegram')->error('Telegram API request failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'chat_id' => $chatId,
+                ]);
+
+                return false;
+            }
+
+            $body = $response->json();
+            if (! ($body['ok'] ?? false)) {
+                Log::channel('telegram')->error('Telegram API returned an error', [
+                    'description' => $body['description'] ?? 'unknown',
+                    'chat_id' => $chatId,
+                ]);
+
+                return false;
+            }
+
+            return true;
+        } catch (Throwable $exception) {
+            Log::channel('telegram')->error('Telegram edit message failed', [
+                'chat_id' => $chatId,
+                'message_id' => $messageId,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
+     * Send a chat action indicator (e.g. "typing") to the given chat.
+     */
+    public function sendChatAction(int $chatId, string $action = 'typing'): bool
+    {
+        if (empty($this->botToken)) {
+            return false;
+        }
+
+        try {
+            $response = Http::timeout(10)
+                ->post("{$this->apiUrl}{$this->botToken}/sendChatAction", [
+                    'chat_id' => $chatId,
+                    'action' => $action,
+                ]);
+
+            return $response->successful() && ($response->json('ok') ?? false);
+        } catch (Throwable $exception) {
+            Log::channel('telegram')->error('Telegram sendChatAction failed', [
                 'chat_id' => $chatId,
                 'error' => $exception->getMessage(),
             ]);

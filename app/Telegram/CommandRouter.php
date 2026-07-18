@@ -23,7 +23,7 @@ class CommandRouter
         'daily' => DailyCommand::class,
     ];
 
-    public function __construct(protected TelegramService $telegram)
+    public function __construct(protected TelegramService $telegram, protected ChatHandler $chatHandler)
     {
         //
     }
@@ -44,6 +44,13 @@ class CommandRouter
         $text = $message['text'] ?? '';
 
         if (! str_starts_with($text, '/')) {
+            Log::channel('telegram')->info('Incoming chat message', [
+                'from' => $message['from']['id'] ?? null,
+                'username' => $message['from']['username'] ?? null,
+            ]);
+
+            $this->chatHandler->handle($message);
+
             return;
         }
 
@@ -59,10 +66,7 @@ class CommandRouter
         ]);
 
         if (! isset($this->commands[$command])) {
-            $this->telegram->sendMessage(
-                (int) $message['chat']['id'],
-                'Unknown command: use /help to see the available commands'
-            );
+            $this->chatHandler->handle($message);
 
             return;
         }
